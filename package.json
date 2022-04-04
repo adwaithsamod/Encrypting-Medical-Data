@@ -1,0 +1,28 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adwaithsamod/Encrypting-Medical-Data.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adwaithsamod/Encrypting-Medical-Data/issues"
+  },
+  "homepage": "https://github.com/adwaithsamod/Encrypting-Medical-Data#readme",
+  "dependencies": {
+    "body-parser": "^1.20.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.3",
+    "formidable": "^2.0.1",
+    "mongoose": "^6.2.9",
+    "multer": "^1.4.4"
+  },
+  "devDependencies": {},
+  "description": ""
+}
