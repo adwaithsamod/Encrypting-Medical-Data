@@ -21,7 +21,7 @@ var storage = multer.diskStorage({
  
 var upload = multer({ storage: storage });
  
-var uploadMultiple = upload.fields([{ name: 'myImage', maxCount: 10 }])
+var uploadMultiple = upload.fields([{ name: 'myImage' }])
  
  
 app.get("/", (req, res) => {
