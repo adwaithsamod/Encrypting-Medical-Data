@@ -305,12 +305,12 @@ def driver():
             p[k] = temp & 0xffffffff
             k+=1
             data = temp
-        encrypt_data = int(input("Enter Key: "))
-        encrypted_data = encryption(encrypt_data)
-        print("Encrypted data : ",encrypted_data)
-        #decrypted_data = decryption(encrypted_data)
-        #print("Decrypted data : ",decrypted_data)
-        return encrypt_data
+        # encrypt_data = int(input("Enter Key: "))
+        # encrypted_data = encryption(encrypt_data)
+        # print("Encrypted data : ",encrypted_data)
+        # decrypted_data = decryption(encrypted_data)
+        # print("Decrypted data : ",decrypted_data)
+        # return encrypt_data
  
 def encryption(data):
         L = data>>32
@@ -347,21 +347,18 @@ def decryption(data):
     decrypted_data1 = (L<<32) ^ R
     return decrypted_data1
  
-loc=pd.DataFrame(glob("C:/Users/adwai/Desktop/git/Project/public/uploads/*"))
-loc.columns=['location']
-path1=loc['location'].iloc[0]
- 
  
     # try block to handle exception
-def path():
+def encrypt(path):
     
-    key = driver()
+    # key = driver()
+    key = encrypt_data
     # print path of image file and encryption key that
     # we are using
     print('The path of file : ', path)
     print('Key for encryption : ', key)
     # open file for reading purpose
-    fin = open(path1, 'rb')
+    fin = open(path, 'rb')
     # storing image data in variable "image"
     image = fin.read()
     fin.close()
@@ -370,17 +367,19 @@ def path():
     image = bytearray(image)
     # performing XOR operation on each value of bytearray
     for index, values in enumerate(image):
-        image[index] = values ^ key
+        # values = encryption(values)
+        # image[index]=values%256
+        image[index] = values ^ (encryption(key))%256
+       
     # opening file for writing purpose
-    fin = open(path1, 'wb')
+    fin = open(path, 'wb')
     # writing encrypted data in image
     fin.write(image)
     fin.close()
     print('Encryption Done...')
    
  
- 
-path()
+# encrypt()
  
  
  
@@ -389,34 +388,63 @@ path()
 
  
 # try block to handle exception
-try:
-   
-    key = driver()
-    # print path of image file and encryption key that
-    # we are using
-    print('The path of file : ', path1)
-    print('Key for encryption : ', key)
-        # open file for reading purpose
-    fin = open(path1, 'rb')
-    # storing image data in variable "image"
-    image = fin.read()
-    fin.close()
-    # converting image into byte array to
-    # perform encryption easily on numeric data
-    image = bytearray(image)
-    # performing XOR operation on each value of bytearray
-    for index, values in enumerate(image):
-        image[index] = values ^ key
-    # opening file for writing purpose
-    fin = open(path1, 'wb')
-    # writing encrypted data in image
-    fin.write(image)
-    fin.close()
-    print('Decryption Done...')
+def decrypt(path):
+
+    # try:
+    
+        # key = driver()
+        key = encrypt_data
+        # print path of image file and encryption key that
+        # we are using
+        print('The path of file : ', path)
+        print('Key for Decryption : ', key)
+            # open file for reading purpose
+        fin = open(path, 'rb')
+        # storing image data in variable "image"
+        image = fin.read()
+        fin.close()
+        # converting image into byte array to
+        # perform encryption easily on numeric data
+        image = bytearray(image)
+        # performing XOR operation on each value of bytearray
+        for index, values in enumerate(image):
+            # image[index] = decryption(values)%256
+            # values = decryption(values)
+            image[index] = values ^ (encryption(key))%256
+        # opening file for writing purpose
+        fin = open(path, 'wb')
+        # writing encrypted data in image
+        fin.write(image)
+        fin.close()
+        print('Decryption Done...')
  
    
-except Exception:
-    print('Error caught : ', Exception.__name__)
+    # except Exception:
+    #     print('Error caught : ', Exception.__name__)
+
+# decrypt()
+
+
+## start
+
+loc=pd.DataFrame(glob("C:/Users/adwai/Desktop/git/Project/public/uploads/*"))
+loc.columns=['location']
+
+encrypt_data = int(input("Enter Key: "))
+
+for i in range(len(loc['location'])):
+    path=loc['location'].iloc[i]
+    encrypted_data = encryption(encrypt_data)
+    print("Encrypted data : ",encrypted_data)
+    encrypt(path)
+    
+encrypt_data = int(input("Enter Key: "))
+
+for i in range(len(loc['location'])):
+    path=loc['location'].iloc[i]
+    decrypted_data = decryption(encrypted_data)
+    print("Decrypted data : ",decrypted_data)
+    decrypt(path)
  
  
 ##############	Avalanche Effect
