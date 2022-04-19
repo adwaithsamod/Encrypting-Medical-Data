@@ -367,7 +367,10 @@ def encrypt(path):
     image = bytearray(image)
     # performing XOR operation on each value of bytearray
     for index, values in enumerate(image):
-        image[index] = values ^ key
+        # values = encryption(values)
+        # image[index]=values%256
+        image[index] = values ^ (encryption(key))%256
+       
     # opening file for writing purpose
     fin = open(path, 'wb')
     # writing encrypted data in image
@@ -387,7 +390,7 @@ def encrypt(path):
 # try block to handle exception
 def decrypt(path):
 
-    try:
+    # try:
     
         # key = driver()
         key = encrypt_data
@@ -405,7 +408,9 @@ def decrypt(path):
         image = bytearray(image)
         # performing XOR operation on each value of bytearray
         for index, values in enumerate(image):
-            image[index] = values ^ key
+            # image[index] = decryption(values)%256
+            # values = decryption(values)
+            image[index] = values ^ (encryption(key))%256
         # opening file for writing purpose
         fin = open(path, 'wb')
         # writing encrypted data in image
@@ -414,8 +419,8 @@ def decrypt(path):
         print('Decryption Done...')
  
    
-    except Exception:
-        print('Error caught : ', Exception.__name__)
+    # except Exception:
+    #     print('Error caught : ', Exception.__name__)
 
 # decrypt()
 
