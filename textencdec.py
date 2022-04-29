@@ -31,13 +31,12 @@ class Main :
 
     # addition modulo 2^32 of two hexadecimal strings.
     def  addBin(self, a,  b) :
-        ans = ""
-        n1 = Long.parseUnsignedLong(a,16)
-        n2 = Long.parseUnsignedLong(b,16)
+        n1 = int(a,16)
+        n2 = int(b,16)
         n1 = (n1 + n2) % self.modVal
-        ans = Long.toHexString(n1)
-        ans = "00000000" + ans
-        return ans[len(ans) - 8:]
+        ans = hex(n1)
+        return ans[2:]
+
     # function F explained above.
     def  f(self, plainText) :
         a = [None] * (4)
@@ -46,7 +45,7 @@ class Main :
         while (i < 8) :
             # the column number for S-box
             # is 8-bit value(8*4 = 32 bit plain text)
-            col = Long.parseUnsignedLong(self.hexToBin(plainText[i:i + 2]),2)
+            col = int(self.hexToBin(plainText[i:i + 2]),2)
             a[int(i / 2)] = self.S[int(i / 2)][int(col)]
             i += 2
         ans = self.addBin(a[0], a[1])

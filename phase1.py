@@ -348,7 +348,7 @@ def decryption(data):
     return decrypted_data1
  
  
-    # try block to handle exception
+
 def encrypt(path):
     
     # key = driver()
@@ -363,9 +363,7 @@ def encrypt(path):
     image = fin.read()
     fin.close()
     # converting image into byte array to
-    # perform encryption easily on numeric data
     image = bytearray(image)
-    # performing XOR operation on each value of bytearray
     for index, values in enumerate(image):
         # values = encryption(values)
         # image[index]=values%256
@@ -387,12 +385,9 @@ def encrypt(path):
  
 
  
-# try block to handle exception
+
 def decrypt(path):
 
-    # try:
-    
-        # key = driver()
         key = encrypt_data
         # print path of image file and encryption key that
         # we are using
@@ -404,12 +399,10 @@ def decrypt(path):
         image = fin.read()
         fin.close()
         # converting image into byte array to
-        # perform encryption easily on numeric data
         image = bytearray(image)
-        # performing XOR operation on each value of bytearray
+
         for index, values in enumerate(image):
-            # image[index] = decryption(values)%256
-            # values = decryption(values)
+   
             image[index] = values ^ (encryption(key))%256
         # opening file for writing purpose
         fin = open(path, 'wb')
