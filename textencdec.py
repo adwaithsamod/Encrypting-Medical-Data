@@ -25,17 +25,20 @@ class Main :
         a=int(a,16)
         b=int(b,16)
         ans=a^b
-        print(len(str(ans)))
         return (hex(ans)[2:])
 
 
     # addition modulo 2^32 of two hexadecimal strings.
-    def  addBin(self, a,  b) :
+    def  addBin(self, a,  b, plainText) :
         n1 = int(a,16)
         n2 = int(b,16)
         n1 = (n1 + n2) % self.modVal
-        ans = hex(n1)
-        return ans[2:]
+        ans = hex(n1)[2:]
+        while(len(ans)<len(plainText)):
+            # print(ans,len(ans))
+            ans="0"+ans
+        # print(ans,len(ans),plainText,len(plainText))
+        return ans
 
     # function F explained above.
     def  f(self, plainText) :
@@ -48,9 +51,10 @@ class Main :
             col = int(plainText[i:i+2],16)
             a[int(i / 2)] = self.S[int(i / 2)][int(col)]
             i += 2
-        ans = self.addBin(a[0], a[1])
+        ans = self.addBin(a[0], a[1],plainText)
         ans = self.xor(ans, a[2])
-        ans = self.addBin(ans, a[3])
+        ans = self.addBin(ans, a[3],plainText)
+        # print(len(a[0]),len(a[1]),len(a[2]),len(a[3]))
         return ans
 
         
@@ -60,9 +64,14 @@ class Main :
         i = 0
         while (i < len(self.P)) :
             self.P[i] = self.xor(self.P[i], key[j:j + 8])
+            # print(len(key))
+            while(len(self.P[i])<len(key)/2):
+                self.P[i]="0"+self.P[i]
             print("subkey " + str((i + 1)) + ": " + (self.P[i]))
             j = (j + 8) % len(key)
             i += 1
+
+            
     # round function
     def  round(self, time,  plainText) :
         left = None
@@ -70,9 +79,16 @@ class Main :
         left = plainText[0:8]
         right = plainText[8:16]
         left = self.xor(left, self.P[time])
+        while(len(left)<len(plainText)/2):
+            left="0"+left
+        
         fOut = self.f(left)
+        
         # output from F function
         right = self.xor(fOut, right)
+        while(len(right)<len(plainText)/2):
+            right="0"+right
+        # print(len(plainText))
         print("round " + str(time) + ": " + right + left)
         # swap left and right
         return right + left
@@ -106,13 +122,13 @@ class Main :
         while (i < 32) :
             self.modVal = self.modVal << 1
             i += 1
-        cipherText = "123456abcd132536"
+        plainText = "123456abcd132536"
         key = "aabb09182736ccdd"
 
         self.keyGenerate(key)
         
         print("-----Encryption-----")
-        cipherText = self.encrypt(cipherText)
+        cipherText = self.encrypt(plainText)
         print("Cipher Text: " + cipherText)
         
         print("-----Decryption-----")
