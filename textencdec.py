@@ -25,6 +25,7 @@ class Main :
         a=int(a,16)
         b=int(b,16)
         ans=a^b
+        print(len(str(ans)))
         return (hex(ans)[2:])
 
 
@@ -44,8 +45,7 @@ class Main :
         while (i < 8) :
             # the column number for S-box
             # is 8-bit value(8*4 = 32 bit plain text)
-            col = int(self.hexToBin(plainText[i:i + 2]),2)
-            print(plainText[i:i+2])
+            col = int(plainText[i:i+2],16)
             a[int(i / 2)] = self.S[int(i / 2)][int(col)]
             i += 2
         ans = self.addBin(a[0], a[1])
@@ -82,7 +82,7 @@ class Main :
             plainText = self.round(i, plainText)
         #postprocessing
         right = plainText[0:8]
-        left = plainText[8, 16]
+        left = plainText[8:16]
         right = self.xor(right, self.P[16])
         left = self.xor(left, self.P[17])
         return left + right
