@@ -294,6 +294,8 @@ public class encdec {
 			// the column number for S-box
 			// is 8-bit value(8*4 = 32 bit plain text)
 			long col = Long.parseUnsignedLong( hexToBin( plainText.substring( i, i + 2 ) ),2 );
+			System.out.println(col);
+			System.out.println(plainText.substring(i,i+2));
 			a[i / 2] = S[i / 2][(int)col];
 		}
 		ans = addBin(a[0], a[1]);

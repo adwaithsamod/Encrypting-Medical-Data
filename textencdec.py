@@ -45,6 +45,7 @@ class Main :
             # the column number for S-box
             # is 8-bit value(8*4 = 32 bit plain text)
             col = int(self.hexToBin(plainText[i:i + 2]),2)
+            print(plainText[i:i+2])
             a[int(i / 2)] = self.S[int(i / 2)][int(col)]
             i += 2
         ans = self.addBin(a[0], a[1])
@@ -75,6 +76,17 @@ class Main :
         print("round " + str(time) + ": " + right + left)
         # swap left and right
         return right + left
+
+    def encrypt(self, plainText) :
+        for i in range(16):
+            plainText = self.round(i, plainText)
+        #postprocessing
+        right = plainText[0:8]
+        left = plainText[8, 16]
+        right = self.xor(right, self.P[16])
+        left = self.xor(left, self.P[17])
+        return left + right
+	
     # decryption
     def  decrypt(self, plainText) :
         i = 17
@@ -96,7 +108,13 @@ class Main :
             i += 1
         cipherText = "123456abcd132536"
         key = "aabb09182736ccdd"
+
         self.keyGenerate(key)
+        
+        print("-----Encryption-----")
+        cipherText = self.encrypt(cipherText)
+        print("Cipher Text: " + cipherText)
+        
         print("-----Decryption-----")
         plainText = self.decrypt(cipherText)
         print("Plain Text: " + plainText)
