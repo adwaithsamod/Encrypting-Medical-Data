@@ -268,10 +268,9 @@ public class encdec {
 		b = hexToBin(b);
 		String ans = "";
 		for (int i = 0; i < a.length(); i++)
-			ans += (char)(((a.charAt(i) - '0')
-						^ (b.charAt(i) - '0'))
-						+ '0');
+			ans += (char)(((a.charAt(i) - '0') ^ (b.charAt(i) - '0')) + '0');
 		ans = binToHex(ans);
+		System.out.println(ans.length());
 		return ans;
 	}
 
@@ -314,9 +313,7 @@ public class encdec {
 			// with initial subkeys.
 			P[i] = xor(P[i], key.substring(j, j + 8));
 
-			System.out.println("subkey "
-							+ (i + 1) + ": "
-							+ P[i]);
+			System.out.println("subkey "+ (i + 1) + ": "+ P[i]);
 			j = (j + 8) % key.length();
 		}
 	}

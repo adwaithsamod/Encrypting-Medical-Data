@@ -20,13 +20,13 @@ class Main :
         return hexa
 
 
-    # xor two hexadecimal strings of same length.
+
     def  xor(self, a,  b) :
-        a = self.hexToBin(a)
-        b = self.hexToBin(b)
-        y = int(a,2) ^ int(b,2)
-        ans= '{0:b}'.format(y)
-        return ans
+        a=int(a,16)
+        b=int(b,16)
+        ans=a^b
+        print(len(str(ans)))
+        return (hex(ans)[2:])
 
 
     # addition modulo 2^32 of two hexadecimal strings.
@@ -45,20 +45,22 @@ class Main :
         while (i < 8) :
             # the column number for S-box
             # is 8-bit value(8*4 = 32 bit plain text)
-            col = int(self.hexToBin(plainText[i:i + 2]),2)
+            col = int(plainText[i:i+2],16)
             a[int(i / 2)] = self.S[int(i / 2)][int(col)]
             i += 2
         ans = self.addBin(a[0], a[1])
         ans = self.xor(ans, a[2])
         ans = self.addBin(ans, a[3])
         return ans
+
+        
     # generate subkeys.
     def keyGenerate(self, key) :
         j = 0
         i = 0
         while (i < len(self.P)) :
             self.P[i] = self.xor(self.P[i], key[j:j + 8])
-            print("subkey " + str((i + 1)) + ": " + self.P[i])
+            print("subkey " + str((i + 1)) + ": " + (self.P[i]))
             j = (j + 8) % len(key)
             i += 1
     # round function
@@ -74,6 +76,17 @@ class Main :
         print("round " + str(time) + ": " + right + left)
         # swap left and right
         return right + left
+
+    def encrypt(self, plainText) :
+        for i in range(16):
+            plainText = self.round(i, plainText)
+        #postprocessing
+        right = plainText[0:8]
+        left = plainText[8:16]
+        right = self.xor(right, self.P[16])
+        left = self.xor(left, self.P[17])
+        return left + right
+	
     # decryption
     def  decrypt(self, plainText) :
         i = 17
@@ -93,9 +106,15 @@ class Main :
         while (i < 32) :
             self.modVal = self.modVal << 1
             i += 1
-        cipherText = "d748ec383d3405f7"
+        cipherText = "123456abcd132536"
         key = "aabb09182736ccdd"
+
         self.keyGenerate(key)
+        
+        print("-----Encryption-----")
+        cipherText = self.encrypt(cipherText)
+        print("Cipher Text: " + cipherText)
+        
         print("-----Decryption-----")
         plainText = self.decrypt(cipherText)
         print("Plain Text: " + plainText)
