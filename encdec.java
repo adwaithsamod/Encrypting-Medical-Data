@@ -270,7 +270,7 @@ public class encdec {
 		for (int i = 0; i < a.length(); i++)
 			ans += (char)(((a.charAt(i) - '0') ^ (b.charAt(i) - '0')) + '0');
 		ans = binToHex(ans);
-		System.out.println(ans.length());
+		// System.out.println(ans.length());
 		return ans;
 	}
 
