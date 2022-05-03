@@ -6,18 +6,6 @@ class Main :
     # to store 2^32(for addition modulo 2^32).
     modVal = 1
     # to convert hexadecimal to binary.
-    def  hexToBin(self, plainText) :
-        s= plainText.encode()
-        num=s.hex()
-        int_value = int(num, base=16)
-        binary = str(bin(int_value))[2:]
-        return binary
-        
-    # convert from binary to hexadecimal.
-    def  binToHex(self, plainText) :
-        s= plainText.encode()
-        hexa=s.hex()
-        return hexa
 
 
 
@@ -76,8 +64,8 @@ class Main :
     def  round(self, time,  plainText) :
         left = None
         right = None
-        left = plainText[0:8]
-        right = plainText[8:16]
+        left = plainText[0:16]
+        right = plainText[16:32]
         left = self.xor(left, self.P[time])
         while(len(left)<len(plainText)/2):
             left="0"+left
@@ -97,8 +85,8 @@ class Main :
         for i in range(16):
             plainText = self.round(i, plainText)
         #postprocessing
-        right = plainText[0:8]
-        left = plainText[8:16]
+        right = plainText[0:16]
+        left = plainText[16:32]
         right = self.xor(right, self.P[16])
         left = self.xor(left, self.P[17])
         return left + right
@@ -110,11 +98,13 @@ class Main :
             plainText = self.round(i, plainText)
             i -= 1
         # postprocessing
-        right = plainText[0:8]
-        left = plainText[8:16]
+        right = plainText[0:16]
+        left = plainText[16:32]
         right = self.xor(right, self.P[1])
         left = self.xor(left, self.P[0])
         return left + right
+
+
     def __init__(self) :
         # storing 2^32 in modVal
         # (<<1 is equivalent to multiply by 2)
@@ -122,17 +112,24 @@ class Main :
         while (i < 32) :
             self.modVal = self.modVal << 1
             i += 1
-        plainText = "123456abcd132536"
+        plainText = "123456abcd132/,."
         key = "aabb09182736ccdd"
+
+        encPlainText=plainText.encode().hex()
+        print(encPlainText)
+        
 
         self.keyGenerate(key)
         
         print("-----Encryption-----")
-        cipherText = self.encrypt(plainText)
-        print("Cipher Text: " + cipherText)
+        encCipherText = self.encrypt(encPlainText)
+        # cipherText=bytes.fromhex(encCipherText).decode()
+        print("Cipher Text: " + encCipherText)
         
         print("-----Decryption-----")
-        plainText = self.decrypt(cipherText)
+        encPlainText = self.decrypt(encCipherText)
+        print(encPlainText)
+        plainText=bytes.fromhex(encPlainText).decode()
         print("Plain Text: " + plainText)
     @staticmethod
     def main( args) :
