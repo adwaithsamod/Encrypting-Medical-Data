@@ -112,25 +112,26 @@ class Main :
         while (i < 32) :
             self.modVal = self.modVal << 1
             i += 1
-        plainText = "123456abcd132/,."
-        key = "aabb09182736ccdd"
+        text = "123456abcd132/,."
+        key = "aabb09182736ccddaabb09182736ccd99665f67f"
 
-        encPlainText=plainText.encode().hex()
-        print(encPlainText)
+        plainText=text.encode().hex()
+        print("Plain Text:" + plainText)
         
 
         self.keyGenerate(key)
         
         print("-----Encryption-----")
-        encCipherText = self.encrypt(encPlainText)
+        cipherText = self.encrypt(plainText)
         # cipherText=bytes.fromhex(encCipherText).decode()
-        print("Cipher Text: " + encCipherText)
+        print("Cipher Text: " + cipherText)
+       
         
         print("-----Decryption-----")
-        encPlainText = self.decrypt(encCipherText)
-        print(encPlainText)
-        plainText=bytes.fromhex(encPlainText).decode()
-        print("Plain Text: " + plainText)
+        plainText = self.decrypt(cipherText)
+        print("Plain Text:" + plainText)
+        text=bytes.fromhex(plainText).decode()
+        print("Text: " + text)
     @staticmethod
     def main( args) :
         Main()
