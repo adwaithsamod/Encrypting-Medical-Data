@@ -112,8 +112,7 @@ class Main :
     def compressMe(self,file, verbose = False):
     
         # Get the path of the file
-        filepath = os.path.join(os.getcwd(), 
-                                file)
+        filepath = os.path.join(os.getcwd(),file)
         
         # open the image
         picture = Image.open(filepath)
@@ -166,7 +165,7 @@ class Main :
         self.compress()
 
         #opening the image to encrypt and converting to bytes
-        with open("Project\public\uploads\Compressed_food.jpeg", "rb") as image2string:
+        with open("Compressed_food.jpeg", "rb") as image2string:
             converted_string = base64.b64encode(image2string.read())
 
         #convereted bytes is stored in a file
