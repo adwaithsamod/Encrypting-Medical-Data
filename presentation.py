@@ -64,8 +64,8 @@ class Main :
     def  round(self, time,  plainText) :
         left = None
         right = None
-        left = plainText[0:16]
-        right = plainText[16:32]
+        left = plainText[0:8]
+        right = plainText[8:16]
         left = self.xor(left, self.P[time])
         while(len(left)<len(plainText)/2):
             left="0"+left
@@ -85,8 +85,8 @@ class Main :
         for i in range(16):
             plainText = self.round(i, plainText)
         #postprocessing
-        right = plainText[0:16]
-        left = plainText[16:32]
+        right = plainText[0:8]
+        left = plainText[8:16]
         right = self.xor(right, self.P[16])
         left = self.xor(left, self.P[17])
         return left + right
@@ -98,8 +98,8 @@ class Main :
             plainText = self.round(i, plainText)
             i -= 1
         # postprocessing
-        right = plainText[0:16]
-        left = plainText[16:32]
+        right = plainText[0:8]
+        left = plainText[8:16]
         right = self.xor(right, self.P[1])
         left = self.xor(left, self.P[0])
         return left + right
@@ -112,20 +112,20 @@ class Main :
         while (i < 32) :
             self.modVal = self.modVal << 1
             i += 1
-        text = "123456abc115144123fcd45ab3df8"
+        text = "1235./ad"
         key = "bb09182736ccddaa"
 
-        # plainText=text.encode().hex()
+        plainText=text.encode("ascii").hex()
 
         print("Text:" + text)
-        # print("Plain Text:" + plainText)
+        print("Plain Text:" + plainText)
         
 
         self.keyGenerate(key)
         
         print("-----Encryption-----")
-        # cipherText = self.encrypt(plainText)
-        cipherText = self.encrypt(text)
+        cipherText = self.encrypt(plainText)
+        # cipherText = self.encrypt(text)
         print("Cipher Text: " + cipherText)
         # print(bytes.fromhex(cipherText).decode())
        
@@ -133,7 +133,7 @@ class Main :
         print("-----Decryption-----")
         plainText = self.decrypt(cipherText)
         print("Plain Text:" + plainText)
-        # text=bytes.fromhex(plainText).decode()
+        text=bytes.fromhex(plainText).decode("ascii")
         print("Text: " + text)
     @staticmethod
     def main( args) :
