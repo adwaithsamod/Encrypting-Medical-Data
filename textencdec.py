@@ -117,6 +117,7 @@ class Main :
 
         j=0
         dec=''
+        enc=''
         
         while(j<len(info)):
             text=info[j]
@@ -132,6 +133,7 @@ class Main :
             
             # print("Cipher Text: " + cipherText)
         
+            enc=enc+cipherText
             
             # print("-----Decryption-----")
             plainText = self.decrypt(cipherText)
@@ -143,27 +145,34 @@ class Main :
             #decrypted text is stored in dec
             dec = dec+text
             j=j+1
-        return dec
+        return dec,enc
 
     def __init__(self) :
         # storing 2^32 in modVal
         # (<<1 is equivalent to multiply by 2)
-        file=open('input.txt','r')
-        lines=file.readlines()
+        fin=open('input.txt','r')
+        
+        lines=fin.readlines()
 
-        wlines=[]
+        wdeclines=[]
+        wenclines=[]
         t0=time.time()
         for line in lines:
             
-            wlines.append(self.process(line).rstrip()+"\n")
+            dec,enc=self.process(line)
+            wenclines.append(enc.rstrip()+"\n")
+            wdeclines.append(dec.rstrip()+"\n")
 
      
         t1=time.time()
         print(t1-t0)
         
+        fout=open('cipher.txt','w')
+        fout.writelines(wenclines)
+        fout.close()
         
         f=open('plainText.txt','w')
-        f.writelines(wlines)
+        f.writelines(wdeclines)
         f.close()
 
     @staticmethod
