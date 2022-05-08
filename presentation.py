@@ -1,5 +1,5 @@
 import time
-
+import avalanche
 
 class Main :
     # Substitution boxes each string is a 32 bit hexadecimal value.
@@ -47,10 +47,10 @@ class Main :
         ans = self.addBin(ans, a[3],plainText)
 
 
-        ans1 = self.xor(a[0],a[2])
-        ans2 = self.xor(a[3],a[1])
-        ans1 = self.addBin(ans1,ans2,plainText)
-        ans = self.xor(ans,ans1)
+        # ans1 = self.xor(a[0],a[2])
+        # ans2 = self.xor(a[3],a[1])
+        # ans1 = self.addBin(ans1,ans2,plainText)
+        # ans = self.xor(ans,ans1)
         # print(len(a[0]),len(a[1]),len(a[2]),len(a[3]))
         return ans
 
@@ -86,7 +86,7 @@ class Main :
         while(len(right)<len(plainText)/2):
             right="0"+right
         # print(len(plainText))
-        print("round " + str(time) + ": " + right + left)
+        # print("round " + str(time) + ": " + right + left)
         # swap left and right
         return right + left
 
@@ -121,30 +121,62 @@ class Main :
         while (i < 32) :
             self.modVal = self.modVal << 1
             i += 1
-        text = "1235./ae"
+        text = 47457569
         key = "bb09182736ccddaa"
-
-        
-        plainText=text.encode("ascii").hex()
-
-        print("Text:" + text)
-        print("Plain Text:" + plainText)
-        
-
         self.keyGenerate(key)
+        list=[]
+        enctime=[]
+        dectime=[]
+        encsum=0
+        decsum=0
+        for i in range(10):
+            text=text+1        
+            plainText=str(text).encode("ascii").hex()
+
+            print("Text:" + str(text))
+            print("Plain Text:" + plainText)
+            
+
         
-        print("-----Encryption-----")
-        cipherText = self.encrypt(plainText)
-        # cipherText = self.encrypt(text)
-        print("Cipher Text: " + cipherText)
-        # print(bytes.fromhex(cipherText).decode())
-       
+            
+            print("-----Encryption-----")
+            t0=time.time_ns()
+            cipherText = self.encrypt(plainText)
+            t1=time.time_ns()
+            # print(t0,t1)
+            enctime.append(t1-t0)
+            encsum=encsum+(t1-t0)
+            # cipherText = self.encrypt(text)
+            print("Cipher Text: " + cipherText)
+            list.append(cipherText)
+            # print(bytes.fromhex(cipherText).decode())
         
-        print("-----Decryption-----")
-        plainText = self.decrypt(cipherText)
-        print("Plain Text:" + plainText)
-        text=bytes.fromhex(plainText).decode("ascii")
-        print("Text: " + text)
+            
+            print("-----Decryption-----")
+            t0=time.time_ns()
+            plainText = self.decrypt(cipherText)
+            t1=time.time_ns()
+            dectime.append(t1-t0)
+            decsum=decsum+(t1-t0)
+
+            print("Plain Text:" + plainText)
+            plainText=bytes.fromhex(plainText).decode("ascii")
+            print("Text: " + plainText)
+        # print(list)
+        aveff=[]
+        sum=0
+        for i in range(len(list)-1):
+            a=(avalanche.Aeffect(list[i],list[i+1]))
+            aveff.append(a)
+            sum+=a
+        print("Avalanche effects=",aveff)
+        print("Average=",sum/len(aveff))
+        print("Encryption times in nanoseconds=",enctime)
+        print("Average encryption time=",encsum/len(enctime),"ns")
+        print("Decryption times in nanoseconds=",dectime)
+        print("Average decryption time=",decsum/len(dectime),"ns")
+
+
     @staticmethod
     def main( args) :
         Main()
