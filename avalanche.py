@@ -22,6 +22,7 @@ def Aeffect(a,b):
         AVA = (one_count/ len (bin(int(a,16))[2:])) * 100
     else:
         AVA = (one_count/ len (bin(int(b,16))[2:])) * 100
-    print ("avalanche effect =", AVA, "%\n\n")
+    return AVA
  
-Aeffect("31093bced90d778e","bde5a9ad9f82cf06")
+# Aeffect("31093bced90d778e","bde5a9ad9f82cf06")
+
