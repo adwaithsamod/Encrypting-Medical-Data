@@ -1,6 +1,7 @@
 from concurrent.futures import process
 import time
 from matplotlib import lines
+from matplotlib.pyplot import prism
 from numpy import byte
 
 
@@ -70,6 +71,7 @@ class Main :
     def  round(self, time,  plainText) :
         left = None
         right = None
+        # print(plainText)
         left = plainText[0:16]
         right = plainText[16:32]
         left = self.xor(left, self.P[time])
@@ -77,7 +79,7 @@ class Main :
             left="0"+left
         
         fOut = self.f(left)
-        
+        # print("Hey",right)
         # output from F function
         right = self.xor(fOut, right)
         while(len(right)<len(plainText)/2):
@@ -98,35 +100,35 @@ class Main :
         return left + right
 	
     # decryption
-    def  decrypt(self, plainText) :
+    def  decrypt(self, cipherText) :
         i = 17
         while (i > 1) :
-            plainText = self.round(i, plainText)
+            cipherText = self.round(i, cipherText)
             i -= 1
         # postprocessing
-        right = plainText[0:16]
-        left = plainText[16:32]
+        right = cipherText[0:16]
+        left = cipherText[16:32]
         right = self.xor(right, self.P[1])
         left = self.xor(left, self.P[0])
         return left + right
 
 
-    def process(self,data):
+    def encprocess(self,data):
         
         info = [data[i:i+16].ljust(16) for i in range(0, len(data), 16)]
 
         j=0
-        dec=''
-        enc=''
         
+        enc=''
+        # print(info)
         while(j<len(info)):
             text=info[j]
-            key = "aabb09182736ccddaabb09182736ccd99665f67f"
-
-            plainText=text.encode().hex()
+            
+            # print(text)
+            plainText = text.encode().hex()
             # print("Plain Text:" + plainText)
             
-            self.keyGenerate(key)
+            
             
             # print("-----Encryption-----")
             cipherText = self.encrypt(plainText)
@@ -134,7 +136,22 @@ class Main :
             # print("Cipher Text: " + cipherText)
         
             enc=enc+cipherText
+            j=j+1
+        return enc
             
+
+    def decprocess(self,data):
+
+        info = [data[i:i+32].ljust(32) for i in range(0, len(data), 32)]
+
+        j=0
+        dec=''
+       
+        
+        while(j<len(info)-1):
+            cipherText=info[j]
+            # print(cipherText)
+
             # print("-----Decryption-----")
             plainText = self.decrypt(cipherText)
             
@@ -145,35 +162,68 @@ class Main :
             #decrypted text is stored in dec
             dec = dec+text
             j=j+1
-        return dec,enc
+        
+        return dec
+
+
 
     def __init__(self) :
         # storing 2^32 in modVal
         # (<<1 is equivalent to multiply by 2)
-        fin=open('input.txt','r')
+        i = 0
+        while (i < 32) :
+            self.modVal = self.modVal << 1
+            i += 1
+
+        key = "aabb09182736ccddaabb09182736ccd99665f67f"
+        self.keyGenerate(key)
+
+        fin=open('input.txt','r',encoding='utf-8')
         
         lines=fin.readlines()
 
-        wdeclines=[]
         wenclines=[]
         t0=time.time()
+        
+
         for line in lines:
             
-            dec,enc=self.process(line)
+            enc=self.encprocess(line)
             wenclines.append(enc.rstrip()+"\n")
-            wdeclines.append(dec.rstrip()+"\n")
+        
 
      
         t1=time.time()
         print(t1-t0)
+
+        # print(wenclines)
         
-        fout=open('cipher.txt','w')
-        fout.writelines(wenclines)
-        fout.close()
-        
-        f=open('plainText.txt','w')
-        f.writelines(wdeclines)
+        f=open('cipher.txt','w')
+        f.writelines(wenclines)
         f.close()
+        
+
+
+        f=open('cipher.txt','r',encoding='utf-8')
+        
+        lines=f.readlines()
+        # print(lines)
+        wdeclines=[]
+        t0=time.time()
+        for line in lines:
+            # print(line)
+            dec=self.decprocess(line)
+            wdeclines.append(dec.rstrip()+"\n")
+            # print(wdeclines)
+
+     
+        t1=time.time()
+        print(t1-t0)
+
+
+        fout=open('plainText.txt','w')
+        fout.writelines(wdeclines)
+        fout.close()
 
     @staticmethod
     def main( args) :
