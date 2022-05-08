@@ -47,6 +47,12 @@ class Main :
         ans = self.addBin(a[0], a[1],plainText)
         ans = self.xor(ans, a[2])
         ans = self.addBin(ans, a[3],plainText)
+
+
+        # ans1 = self.xor(a[0],a[2])
+        # ans2 = self.xor(a[3],a[1])
+        # ans1 = self.addBin(ans1,ans2,plainText)
+        # ans = self.xor(ans,ans1)
         # print(len(a[0]),len(a[1]),len(a[2]),len(a[3]))
         return ans
 
@@ -241,6 +247,12 @@ class Main :
         enc=self.encprocess(data)
         t1=time.time()
         print(t1-t0)
+
+        fc=open('cipherimage.jpeg','wb')
+        res = bytes(enc, 'utf-8')
+        fc.write(base64.b64decode((res)))
+        fc.close()
+
 
         f=open('cipher.txt','w')
         f.write(enc)

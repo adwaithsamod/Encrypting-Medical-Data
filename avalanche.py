@@ -24,4 +24,4 @@ def Aeffect(a,b):
         AVA = (one_count/ len (bin(int(b,16))[2:])) * 100
     print ("avalanche effect =", AVA, "%\n\n")
  
-Aeffect("f4c08c58ccbce960","96796787a6ece695")
+Aeffect("31093bced90d778e","bde5a9ad9f82cf06")
