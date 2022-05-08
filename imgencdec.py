@@ -153,6 +153,59 @@ class Main :
     
         # print("Done")
 
+    
+    def encprocess(self,data):
+
+        #string is split into 16 bit chunks and stored in a list also added white spaces at the last element if needed (<16)
+        info = [data[i:i+16].ljust(16) for i in range(0, len(data), 16)]
+
+        j=0
+        enc=''
+        
+        while(j<len(info)):
+            text=info[j]
+            
+
+            plainText=text.encode().hex()
+            # print("Plain Text:" + plainText)
+            
+           
+            
+            # print("-----Encryption-----")
+            cipherText = self.encrypt(plainText)
+            
+            # print("Cipher Text: " + cipherText)
+            enc=enc+cipherText
+            j=j+1
+        return enc
+            
+
+    def decprocess(self,data):
+
+        info = [data[i:i+32].ljust(32) for i in range(0, len(data), 32)]
+
+        j=0
+        dec=''
+       
+        
+        while(j<len(info)):
+            cipherText=info[j]
+            # print(cipherText)
+
+            # print("-----Decryption-----")
+            plainText = self.decrypt(cipherText)
+            
+            # print("Plain Text:" + plainText)
+            text=bytes.fromhex(plainText).decode()
+            # print("Text: " + text)
+
+            #decrypted text is stored in dec
+            dec = dec+text
+            j=j+1
+        
+        return dec
+
+
 
     def __init__(self) :
         # storing 2^32 in modVal
@@ -162,6 +215,9 @@ class Main :
             self.modVal = self.modVal << 1
             i += 1
         
+        key = "aabb09182736ccddaabb09182736ccd99665f67f"
+        self.keyGenerate(key)
+
         self.compress()
 
         #opening the image to encrypt and converting to bytes
@@ -177,43 +233,30 @@ class Main :
         byte = file.read()
         data=str(byte)
 
-        #string is split into 16 bit chunks and stored in a list also added white spaces at the last element if needed (<16)
-        info = [data[i:i+16].ljust(16) for i in range(0, len(data), 16)]
-
-        j=0
-        dec=''
+       
+        
+        # print(dec)
+        
         t0=time.time()
-        while(j<len(info)):
-            text=info[j]
-            key = "aabb09182736ccddaabb09182736ccd99665f67f"
-
-            plainText=text.encode().hex()
-            # print("Plain Text:" + plainText)
-            
-            self.keyGenerate(key)
-            
-            # print("-----Encryption-----")
-            cipherText = self.encrypt(plainText)
-            
-            # print("Cipher Text: " + cipherText)
-            
-            
-            # print("-----Decryption-----")
-            plainText = self.decrypt(cipherText)
-            
-            # print("Plain Text:" + plainText)
-            text=bytes.fromhex(plainText).decode()
-            # print("Text: " + text)
-
-            #decrypted text is stored in dec
-            dec = dec+text
-            j=j+1
+        enc=self.encprocess(data)
         t1=time.time()
         print(t1-t0)
 
-        # print(dec)
+        f=open('cipher.txt','w')
+        f.write(enc)
+        f.close()
+
+        f=open('cipher.txt','r')
+        data=f.read()
+        f.close()
+        t0=time.time()
+        dec=self.decprocess(data)
+        t1=time.time()
+        print(t1-t0)
+
         #string is converted back to bytes and the image is retrieved from it
         res = bytes(dec[2:], 'utf-8')
+        # print(res)
         decodeit = open('hello_level.jpeg', 'wb')
         decodeit.write(base64.b64decode((res)))
         decodeit.close()
