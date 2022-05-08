@@ -196,7 +196,7 @@ class Main :
             cipherText = self.encrypt(plainText)
             
             # print("Cipher Text: " + cipherText)
-        
+            
             
             # print("-----Decryption-----")
             plainText = self.decrypt(cipherText)
