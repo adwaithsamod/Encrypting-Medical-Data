@@ -12,3 +12,7 @@ ciphervid.txt
 decvid.mp4
 videnc.bin
 __pycache__/
+audenc.bin
+cipheraud.mpeg
+decaud.mpeg
+cipheraud.txt
