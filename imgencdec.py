@@ -238,6 +238,7 @@ class Main :
         file = open('encode.bin', 'rb')
         byte = file.read()
         data=str(byte)
+        file.close()
 
        
         

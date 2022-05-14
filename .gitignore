@@ -7,3 +7,12 @@ encode.bin
 plainText.txt
 cipher.txt
 food.jpeg
+ciphervid.mp4
+ciphervid.txt
+decvid.mp4
+videnc.bin
+__pycache__/
+audenc.bin
+cipheraud.mpeg
+decaud.mpeg
+cipheraud.txt
