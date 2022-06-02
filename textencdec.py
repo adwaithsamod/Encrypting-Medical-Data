@@ -194,8 +194,8 @@ class Main :
         
 
      
-        t1=time.time()
-        print(t1-t0)
+        # t1=time.time()
+        # print(t1-t0)
 
         # print(wenclines)
         
@@ -210,7 +210,7 @@ class Main :
         lines=f.readlines()
         # print(lines)
         wdeclines=[]
-        t0=time.time()
+        # t0=time.time()
         for line in lines:
             # print(line)
             dec=self.decprocess(line)
