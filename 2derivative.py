@@ -1,7 +1,5 @@
-import avalanche
 import time
-
-
+import avalanche
 
 class Main :
     # Substitution boxes each string is a 32 bit hexadecimal value.
@@ -147,6 +145,8 @@ class Main :
 ]
 
 
+
+
     # Subkeys initialisation with digits of pi.
     P = ["243f6a88", "85a308d3", "13198a2e", "03707344", "a4093822", "299f31d0", "082efa98", "ec4e6c89", "452821e6", "38d01377", "be5466cf", "34e90c6c", "c0ac29b7", "c97c50dd", "3f84d5b5", "b5470917", "9216d5d9", "8979fb1b"]
     # to store 2^32(for addition modulo 2^32).
@@ -174,6 +174,20 @@ class Main :
         # print(ans,len(ans),plainText,len(plainText))
         return ans
 
+      # generate subkeys.
+    def keyGenerate(self, key) :
+        j = 0
+        i = 0
+        while (i < len(self.P)) :
+            self.P[i] = self.xor(self.P[i], key[j:j + 8])
+            # print(len(key))
+            while(len(self.P[i])<len(key)/2):
+                self.P[i]="0"+self.P[i]
+            # print("subkey " + str((i + 1)) + ": " + (self.P[i]))
+            j = (j + 8) % len(key)
+            i += 1
+
+
     # function F explained above.
     def  f(self, plainText) :
         a = [None] * (4)
@@ -188,6 +202,7 @@ class Main :
         ans = self.addBin(a[0], a[1],plainText)
         ans = self.xor(ans, a[2])
         ans = self.addBin(ans, a[3],plainText)
+
 
         # ans1 = self.xor(a[0],a[2])
         # ans2 = self.xor(a[3],a[1])
@@ -238,26 +253,12 @@ class Main :
         ans = self.xor(ans, a[2])
         ans = self.addBin(ans, a[3],plainText)
 
-        ans1 = self.xor(a[0],a[2])
-        ans2 = self.xor(a[3],a[1])
-        ans1 = self.addBin(ans1,ans2,plainText)
-        ans = self.xor(ans,ans1)
-        print(len(a[0]),len(a[1]),len(a[2]),len(a[3]))
+        # ans1 = self.xor(a[0],a[2])
+        # ans2 = self.xor(a[3],a[1])
+        # ans1 = self.addBin(ans1,ans2,plainText)
+        # ans = self.xor(ans,ans1)
+        # print(len(a[0]),len(a[1]),len(a[2]),len(a[3]))
         return ans
-
-        
-    # generate subkeys.
-    def keyGenerate(self, key) :
-        j = 0
-        i = 0
-        while (i < len(self.P)) :
-            self.P[i] = self.xor(self.P[i], key[j:j + 8])
-            # print(len(key))
-            while(len(self.P[i])<len(key)/2):
-                self.P[i]="0"+self.P[i]
-            # print("subkey " + str((i + 1)) + ": " + (self.P[i]))
-            j = (j + 8) % len(key)
-            i += 1
 
             
     # round function
@@ -273,11 +274,10 @@ class Main :
         while(len(left)<len(plainText)/2):
             left="0"+left
         
-        # fOut1 = self.f1(left[0:8])
-        # fOut2 = self.f2(left[8:16])
-        # fOut = fOut1 + fOut2
-        fOut = self.f(left)
-
+        fOut1 = self.f1(left[0:8])
+        fOut2 = self.f2(left[8:16])
+        fOut = fOut1 + fOut2
+        # fOut = self.f(left)
         # print("Hey",right)
         # output from F function
         right = self.xor(fOut, right)
@@ -288,19 +288,20 @@ class Main :
         # swap left and right
         return right + left
 
-    def encrypt(self, plainText,Rcount) :
-        for i in range(Rcount):
+
+    def encrypt(self, plainText) :
+        for i in range(16):
             plainText = self.round(i, plainText)
         #postprocessing
         right = plainText[0:16]
         left = plainText[16:32]
-        right = self.xor(right, self.P[Rcount])
-        left = self.xor(left, self.P[Rcount+1])
+        right = self.xor(right, self.P[16])
+        left = self.xor(left, self.P[17])
         return left + right
 	
     # decryption
-    def  decrypt(self, cipherText,Rcount) :
-        i = Rcount+1
+    def  decrypt(self, cipherText) :
+        i = 17
         while (i > 1) :
             cipherText = self.round(i, cipherText)
             i -= 1
@@ -312,130 +313,67 @@ class Main :
         return left + right
 
 
-    def encprocess(self,data,Rcount):
-        
-        info = [data[i:i+16].ljust(16) for i in range(0, len(data), 16)]
-
-        j=0
-        
-        enc=''
-        # print(info)
-        while(j<len(info)):
-            text=str(info[j])
-            
-            # print(text)
-            plainText = text.encode().hex()
-            # print("Plain Text:" + plainText)
-            
-            
-            
-            # print("-----Encryption-----")
-            cipherText = self.encrypt(plainText,Rcount)
-            
-            # print("Cipher Text: " + cipherText)
-        
-            enc=enc+cipherText
-            j=j+1
-        return enc
-            
-
-    def decprocess(self,data,Rcount):
-
-        info = [data[i:i+32].ljust(32) for i in range(0, len(data), 32)]
-
-        j=0
-        dec=''
-       
-        
-        while(j<len(info)-1):
-            cipherText=info[j]
-            # print(cipherText)
-
-            # print("-----Decryption-----")
-            plainText = self.decrypt(cipherText,Rcount)
-            
-            # print("Plain Text:" + plainText)
-            text=bytes.fromhex(plainText).decode()
-            # print("Text: " + text)
-
-            #decrypted text is stored in dec
-            dec = dec+text
-            j=j+1
-        
-        return dec
-
-
-
     def __init__(self) :
         # storing 2^32 in modVal
         # (<<1 is equivalent to multiply by 2)
-        Rcount=16;#Round count can be 8-16 or more
         i = 0
         while (i < 32) :
             self.modVal = self.modVal << 1
             i += 1
-
-        key = "aabb09182736ccddaabb09182736ccd99665f67f"
+        text = "123456789"
+        key = "bb09182736ccddaa"
         self.keyGenerate(key)
+        list=[]
+        enctime=[]
+        dectime=[]
+        encsum=0
+        decsum=0
+        for i in range(10):
+            text=str(int(text)+1)        
+            plainText=str(text).encode().hex()
 
-        fin=open('twoderivative.txt','r')
-        
-        lines=fin.readlines()
-        # print(lines)
-        wenclines=[]
-        t0=time.time()
-        
-
-        for line in lines:
+            print("Text:" + str(text))
+            print("Plain Text:" + plainText)
             
-            # enc=self.encprocess(line,Rcount)
-            enc=self.encrypt(line,Rcount)
-            wenclines.append(enc.rstrip()+"\n")
+
         
-
-     
-        t1=time.time()
-        print(t1-t0)
-
-        # print(wenclines)
+            
+            print("-----Encryption-----")
+            t0=time.time_ns()
+            cipherText = self.encrypt(plainText)
+            t1=time.time_ns()
+            # print(t0,t1)
+            enctime.append(t1-t0)
+            encsum=encsum+(t1-t0)
+            # cipherText = self.encrypt(text)
+            print("Cipher Text: " + cipherText)
+            list.append(cipherText)
+            # print(bytes.fromhex(cipherText).decode())
         
-        f=open('cipher.txt','w')
-        f.writelines(wenclines)
-        f.close()
-        
+            
+            print("-----Decryption-----")
+            t0=time.time_ns()
+            plainText = self.decrypt(cipherText)
+            t1=time.time_ns()
+            dectime.append(t1-t0)
+            decsum=decsum+(t1-t0)
 
-
-        f=open('cipher.txt','r')
-        # print(chardet.detect(f.read()))
-        
-        lines=f.readlines()
-        # print(lines)
-        wdeclines=[]
-        t0=time.time()
-        for line in lines:
-            # print(line)
-            # dec=self.decprocess(line,Rcount)
-            dec=self.decrypt(line,Rcount)
-            wdeclines.append(dec.rstrip()+"\n")
-            # print(wdeclines)
-
-     
-        t1=time.time()
-        print(t1-t0)
-
-
-        fout=open('plainText.txt','w')
-        fout.writelines(wdeclines)
-        fout.close()
-
+            print("Plain Text:" + plainText)
+            plainText=bytes.fromhex(plainText).decode()
+            print("Text: " + plainText)
+        # print(list)
         aveff=[]
         sum=0
-        for i in range(len(lines)-1):
-            a=(avalanche.Aeffect(lines[i],lines[i+1]))
+        for i in range(len(list)-1):
+            a=(avalanche.Aeffect(list[i],list[i+1]))
             aveff.append(a)
             sum+=a
         print("Avalanche effects=",aveff)
         print("Average=",sum/len(aveff))
+        print("Encryption times in nanoseconds=",enctime)
+        print("Average encryption time=",encsum/len(enctime),"ns")
+        print("Decryption times in nanoseconds=",dectime)
+        print("Average decryption time=",decsum/len(dectime),"ns")
 
 
     @staticmethod

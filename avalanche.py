@@ -4,10 +4,10 @@ def Aeffect(a,b):
   # b = 37385 # second_cipher after chanage one bit
 # print bitwise XOR operation
     a_xor_b = int(a,16) ^ int(b,16)
-    print("a ^ b =", a_xor_b)
+    # print("a ^ b =", a_xor_b)
 # Base 2(binary)
     bin_a_xor_b = bin(a_xor_b)
-    print("the result in binary =", bin_a_xor_b)
+    # print("the result in binary =", bin_a_xor_b)
 # next steps to count 1s in binary number
     one_count = 0
     for i in bin_a_xor_b:
