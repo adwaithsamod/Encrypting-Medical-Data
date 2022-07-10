@@ -2,11 +2,9 @@ node_modules/
 public/uploads/
 test.py
 test.java
-input.txt
 encode.bin
 plainText.txt
 cipher.txt
-food.jpeg
 ciphervid.mp4
 ciphervid.txt
 decvid.mp4
